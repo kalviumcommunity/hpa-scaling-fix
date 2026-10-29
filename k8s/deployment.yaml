@@ -1,0 +1,25 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: scaling-api
+spec:
+  replicas: 1
+  selector:
+    matchLabels: {app: scaling-api}
+  template:
+    metadata:
+      labels: {app: scaling-api}
+    spec:
+      containers:
+        - name: api
+          image: scaling-api:1.0.0
+          imagePullPolicy: Never
+          ports: [{containerPort: 5000}]
+          resources:
+            requests:
+              memory: 64Mi
+            limits:
+              memory: 128Mi
+          readinessProbe:
+            httpGet: {path: /health, port: 5000}
+            periodSeconds: 3
